@@ -55,6 +55,9 @@
     </Compile>
     <Compile Include="ICostPriceCalculator.cs" />
     <Compile Include="LifoCalculator.cs" />
+    <Compile Include="AvgCalculator.cs" />
+    <Compile Include="MinCalculator.cs" />
+    <Compile Include="MaxCalculator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SellResults.cs" />

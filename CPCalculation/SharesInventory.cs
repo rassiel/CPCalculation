@@ -30,7 +30,12 @@ namespace CPCalculation
             {
                 throw new InvalidOperationException("Can't sell more than the total of shares");
             }
-            var result = costPriceCalculator.Sell(Shares, sharesSold, sellPricePerShare, sellDate);
+
+            if (costPriceCalculator == null)
+            {
+                throw new ArgumentNullException("costPriceCalculator can't be null");
+            }
+            var result = costPriceCalculator.Calculate(Shares, sharesSold, sellPricePerShare, sellDate);
             return result;
         }
     }

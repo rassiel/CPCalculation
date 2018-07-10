@@ -8,7 +8,6 @@ namespace CPCalculation
 {
     public interface ICostPriceCalculator
     {
-        double CostPrice { get; set; }
-        SellResults Sell(IList<Share> shares, int sharesSold, double sellPricePerShare, DateTime sellDate);
+        SellResults Calculate(IList<Share> shares, int sharesSold, double sellPricePerShare, DateTime sellDate);
     }
 }

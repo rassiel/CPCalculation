@@ -8,21 +8,20 @@ namespace CPCalculation
 {
     public class FifoCalculator : ICostPriceCalculator
     {
-        public double CostPrice { get; set; }
 
-        public SellResults Sell(IList<Share> shares, int sharesSold, double sellPricePerShare, DateTime sellDate)
+        public SellResults Calculate(IList<Share> shares, int sharesSold, double sellPricePerShare, DateTime sellDate)
         {
             var result = new SellResults();
 
             var sharesRemaining = 0;
             var sharesToSell = sharesSold;
 
-            var splitShareLeft = 0;
-            var splitShareLeftPrice = 0.0;
+            var sellingShares = 0;
+            var sellingSharesTotal = 0.0;
 
             var splitPosition = 0;
             var remainingShares = 0;
-            var totalCostRemaining = 0.0;
+            var remainingSharesTotal = 0.0;
 
             for (int i = 0; i < shares.Count; i++)
             {
@@ -31,19 +30,19 @@ namespace CPCalculation
                     sharesRemaining = sharesToSell - shares[i].Shares;
                     if (sharesRemaining > 0)
                     {
-                        splitShareLeft += shares[i].Shares;
-                        splitShareLeftPrice += shares[i].Total;
+                        sellingShares += shares[i].Shares;
+                        sellingSharesTotal += shares[i].Total;
                         sharesToSell = sharesRemaining;
                         continue;
                     }
                     else
                     {
-                        var toLeft = shares[i].Shares + sharesRemaining;
-                        splitShareLeft += toLeft;
-                        splitShareLeftPrice += toLeft * shares[i].Price;
+                        var finalFillingShares = shares[i].Shares + sharesRemaining;
+                        sellingShares += finalFillingShares;
+                        sellingSharesTotal += finalFillingShares * shares[i].Price;
 
-                        remainingShares = shares[i].Shares - toLeft;
-                        totalCostRemaining = remainingShares * shares[i].Price;
+                        remainingShares = shares[i].Shares - finalFillingShares;
+                        remainingSharesTotal = remainingShares * shares[i].Price;
 
                         splitPosition = i;
                         break;
@@ -59,13 +58,13 @@ namespace CPCalculation
             for (int i = splitPosition + 1; i < shares.Count; i ++)
             {
                 remainingShares += shares[i].Shares;
-                totalCostRemaining += shares[i].Total;
+                remainingSharesTotal += shares[i].Total;
             }
 
-            result.CostPriceSoldShares = splitShareLeftPrice / splitShareLeft;
-            result.GainLossOnSale = sellPricePerShare * splitShareLeft - splitShareLeftPrice;
+            result.CostPriceSoldShares = sellingSharesTotal / sellingShares;
+            result.GainLossOnSale = sellPricePerShare * sellingShares - sellingSharesTotal;
             result.RemainingShares = remainingShares;
-            result.CostPriceRemaining = totalCostRemaining / remainingShares;
+            result.CostPriceRemaining = remainingSharesTotal / remainingShares;
             return result;
         }
     }

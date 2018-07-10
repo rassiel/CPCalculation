@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnitTestProject1
 {
     [TestClass]
-    public class LifoCalculatorTests
+    public class MinCalculatorTests
     {
         public List<Share> SharesSample = new List<Share>()
         {
@@ -28,41 +28,41 @@ namespace UnitTestProject1
         };
 
         [TestMethod]
-        public void LifoCalculator_Sample()
+        public void MinCalculator_Sample()
         {
             //Arrange
             var shares = new SharesInventory();
-            var lifoCalculator = new LifoCalculator();
+            var MinCalculator = new MinCalculator();
 
             //Act
             shares.Purchase(SharesSample[0]);
             shares.Purchase(SharesSample[1]);
             shares.Purchase(SharesSample[2]);
-            var result = shares.Sell(120, 10.5, new DateTime(2005, 3, 2), lifoCalculator);
+            var result = shares.Sell(120, 10.5, new DateTime(2005, 3, 2), MinCalculator);
 
             //Assert
-            Assert.AreEqual(result.CostPriceSoldShares, 10.666, 0.001);
-            Assert.AreEqual(result.GainLossOnSale, -20);
+            Assert.AreEqual(result.CostPriceSoldShares, 10, 0.001);
+            Assert.AreEqual(result.GainLossOnSale, 60);
             Assert.AreEqual(result.RemainingShares, 70);
-            Assert.AreEqual(result.CostPriceRemaining, 10.7142, 0.001);
+            Assert.AreEqual(result.CostPriceRemaining, 10, 0.001);
+
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void LifoCalculator_NotEnoughSharesByDate()
+        public void MinCalculator_NotEnoughSharesByDate()
         {
             //Arrange
             var shares = new SharesInventory();
-            var lifoCalculator = new LifoCalculator();
+            var MinCalculator = new MinCalculator();
 
             //Act
             shares.Purchase(SharesSample[0]);
             shares.Purchase(SharesSample[1]);
             shares.Purchase(SharesSample[2]);
-            var result = shares.Sell(120, 10.5, new DateTime(2005, 1, 1), lifoCalculator);
+            var result = shares.Sell(120, 10.5, new DateTime(2005, 1, 1), MinCalculator);
 
             //Assert
         }
-
     }
 }

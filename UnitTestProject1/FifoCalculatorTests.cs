@@ -43,6 +43,9 @@ namespace UnitTestProject1
             //Assert
             Assert.AreEqual(result.CostPriceSoldShares, 10.333, 0.001);
             Assert.AreEqual(result.GainLossOnSale, 20);
+            Assert.AreEqual(result.RemainingShares, 70);
+            Assert.AreEqual(result.CostPriceRemaining, 11.2857, 0.001);
+
         }
     }
 }

@@ -17,7 +17,7 @@ namespace CPCalculation
             var sharesBeforeDatePriceMax = 0.0;
 
             var i = 0;
-            while (shares[i].PurchaseDate <= sellDate && i < shares.Count)
+            while (i < shares.Count && shares[i].PurchaseDate <= sellDate)
             {
                 sharesBeforeDate += shares[i].Shares;
                 sharesBeforeDatePriceMax = Math.Max(sharesBeforeDatePriceMax, shares[i].Price);
@@ -50,9 +50,9 @@ namespace CPCalculation
             remainingSharesTotal = remainingShares * remainingSharesPrice;
 
             result.CostPriceSoldShares = sharesBeforeDatePriceMax;
-            result.GainLossOnSale = sellPricePerShare * sharesSold - sellingSharesTotal;
+            result.GainLossOnSale = sellPricePerShare * sharesSold - result.CostPriceSoldShares * sharesSold;
             result.RemainingShares = remainingShares;
-            result.CostPriceRemaining = remainingSharesPrice;
+            result.CostPriceRemaining = remainingSharesPrice * (result.RemainingShares > 0 ? 1 : 0);
             return result;
         }
     }

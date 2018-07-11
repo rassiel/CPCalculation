@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnitTestProject1
 {
     [TestClass]
-    public class MaxCalculatorTests
+    public class AvgCalculatorTests
     {
         public List<Share> SharesSample = new List<Share>()
         {
@@ -28,39 +28,39 @@ namespace UnitTestProject1
         };
 
         [TestMethod]
-        public void MaxCalculator_Sample()
+        public void AvgCalculator_Sample()
         {
             //Arrange
             var shares = new SharesInventory();
-            var MaxCalculator = new MaxCalculator();
+            var avgCalculator = new AvgCalculator();
 
             //Act
             shares.Purchase(SharesSample[0]);
             shares.Purchase(SharesSample[1]);
             shares.Purchase(SharesSample[2]);
-            var result = shares.Sell(120, 10.5, new DateTime(2005, 3, 2), MaxCalculator);
+            var result = shares.Sell(120, 10.5, new DateTime(2005, 3, 2), avgCalculator);
 
             //Assert
-            Assert.AreEqual(12, result.CostPriceSoldShares,0.001);
-            Assert.AreEqual(-180, result.GainLossOnSale);
+            Assert.AreEqual(11, result.CostPriceSoldShares, 0.001);
+            Assert.AreEqual(-60, result.GainLossOnSale);
             Assert.AreEqual(70, result.RemainingShares);
-            Assert.AreEqual(12, result.CostPriceRemaining, 0.001);
+            Assert.AreEqual(11.5, result.CostPriceRemaining, 0.001);
 
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void MaxCalculator_NotEnoughSharesByDate()
+        public void AvgCalculator_NotEnoughSharesByDate()
         {
             //Arrange
             var shares = new SharesInventory();
-            var maxCalculator = new MaxCalculator();
+            var avgCalculator = new AvgCalculator();
 
             //Act
             shares.Purchase(SharesSample[0]);
             shares.Purchase(SharesSample[1]);
             shares.Purchase(SharesSample[2]);
-            var result = shares.Sell(120, 10.5, new DateTime(2005, 1, 1), maxCalculator);
+            var result = shares.Sell(120, 10.5, new DateTime(2005, 1, 1), avgCalculator);
 
             //Assert
         }

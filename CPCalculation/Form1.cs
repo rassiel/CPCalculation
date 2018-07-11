@@ -53,20 +53,20 @@ namespace CPCalculation
             int.TryParse(txtSharesSold.Text, out sharesSold);
             if (sharesSold <= 0)
             {
-                displaybox("shares sold invalid");
+                displayMessage("shares sold invalid");
                 return;
             }
 
             double.TryParse(txtPricePerShare.Text, out pricePerShare);
             if (pricePerShare <= 0)
             {
-                displaybox("price per shares invalid");
+                displayMessage("price per shares invalid");
                 return;
             }
 
             if (!DateTime.TryParse(txtSellDate.Text, out sellDate))
             {
-                displaybox("invalid date");
+                displayMessage("invalid date");
                 return;
             }
 
@@ -89,20 +89,28 @@ namespace CPCalculation
                     costPriceCalculator = new AvgCalculator();
                     break;
                 default:
-                    displaybox("must select a valid method");
+                    displayMessage("must select a valid method");
                     return;
             }
 
-            results = shares.Sell(sharesSold, pricePerShare, sellDate, costPriceCalculator);
+            try
+            {
+                results = shares.Sell(sharesSold, pricePerShare, sellDate, costPriceCalculator);
+            }
+            catch (InvalidOperationException ex)
+            {
+                displayMessage(ex.Message);
+                return;
+            }
             lblResults.Text = string.Format("Cost Price of Sold Shares: {0}\nGain Loss On Sale: {1}\n" + 
                 "Number of Remaining Shares: {2}\n" + 
                 "Cost Price of Remaining Shares: {3}", results.CostPriceSoldShares, results.GainLossOnSale, results.RemainingShares, results.CostPriceRemaining);
 
         }
 
-        public void displaybox(string message)
+        public void displayMessage(string message)
         {
-            MessageBox.Show(message);
+            lblResults.Text = message;
         }
     }
 }

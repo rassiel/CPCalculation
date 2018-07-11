@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="FifoCalculatorTests.cs" />
     <Compile Include="LifoCalculatorTest.cs" />
+    <Compile Include="AvgCalculatorTests.cs" />
     <Compile Include="MinCalculatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MaxCalculatorTest.cs" />

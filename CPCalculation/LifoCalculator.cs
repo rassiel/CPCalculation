@@ -78,9 +78,9 @@ namespace CPCalculation
 
 
             result.CostPriceSoldShares = sellingSharesTotal / sellingShares;
-            result.GainLossOnSale = sellPricePerShare * sellingShares - sellingSharesTotal;
+            result.GainLossOnSale = sellPricePerShare * sharesSold - result.CostPriceSoldShares * sharesSold;
             result.RemainingShares = totalRemainingShares;
-            result.CostPriceRemaining = totalRemainingSharesTotal / totalRemainingShares;
+            result.CostPriceRemaining = (totalRemainingSharesTotal / totalRemainingShares) * ( result.RemainingShares > 0 ? 1 : 0);
             return result;
         }
     }

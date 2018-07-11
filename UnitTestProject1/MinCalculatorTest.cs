@@ -41,10 +41,10 @@ namespace UnitTestProject1
             var result = shares.Sell(120, 10.5, new DateTime(2005, 3, 2), MinCalculator);
 
             //Assert
-            Assert.AreEqual(result.CostPriceSoldShares, 10, 0.001);
-            Assert.AreEqual(result.GainLossOnSale, 60);
-            Assert.AreEqual(result.RemainingShares, 70);
-            Assert.AreEqual(result.CostPriceRemaining, 10, 0.001);
+            Assert.AreEqual(10, result.CostPriceSoldShares, 0.001);
+            Assert.AreEqual(60, result.GainLossOnSale);
+            Assert.AreEqual(70, result.RemainingShares);
+            Assert.AreEqual(10, result.CostPriceRemaining, 0.001);
 
         }
 

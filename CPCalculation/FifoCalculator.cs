@@ -13,58 +13,62 @@ namespace CPCalculation
         {
             var result = new SellResults();
 
-            var sharesRemaining = 0;
-            var sharesToSell = sharesSold;
+            var sharesBeforeDate = 0;
+            var sharesBeforeDateTotal = 0.0;
 
-            var sellingShares = 0;
-            var sellingSharesTotal = 0.0;
+            var sharesSelling = sharesSold;
 
-            var splitPosition = 0;
+            var sharesRemainingInSplit = 0;
+            var sharesRemainingInSplitTotal = 0.0;
+
+            var i = 0;
+            while (i < shares.Count && shares[i].PurchaseDate <= sellDate && sharesSelling > shares[i].Shares)
+            {
+                sharesBeforeDate += shares[i].Shares;
+                sharesBeforeDateTotal += shares[i].Total;
+
+                sharesSelling -= shares[i].Shares;
+                i++;
+            }
+
+            if (sharesSelling <= shares[i].Shares && shares[i].PurchaseDate <= sellDate)
+            {
+                sharesBeforeDate += sharesSelling;
+                sharesBeforeDateTotal += sharesSelling * shares[i].Price;
+
+                sharesRemainingInSplit = shares[i].Shares - sharesSelling;
+                sharesRemainingInSplitTotal = sharesRemainingInSplit * shares[i].Price;
+                i++;
+            }
+
+            if (sharesBeforeDate < sharesSold)
+            {
+                throw new InvalidOperationException("Not enough shares to sell by the specified date");
+            }
+
+            var sharesAfterDate = 0;
+            var shareAfterDateTotal = 0.0;
+
+            while (i < shares.Count)
+            {
+                sharesAfterDate += shares[i].Shares;
+                shareAfterDateTotal += shares[i].Total;
+
+                i++;
+            }
+
             var remainingShares = 0;
             var remainingSharesTotal = 0.0;
 
-            for (int i = 0; i < shares.Count; i++)
-            {
-                if (shares[i].PurchaseDate <= sellDate)
-                {
-                    sharesRemaining = sharesToSell - shares[i].Shares;
-                    if (sharesRemaining > 0)
-                    {
-                        sellingShares += shares[i].Shares;
-                        sellingSharesTotal += shares[i].Total;
-                        sharesToSell = sharesRemaining;
-                        continue;
-                    }
-                    else
-                    {
-                        var finalFillingShares = shares[i].Shares + sharesRemaining;
-                        sellingShares += finalFillingShares;
-                        sellingSharesTotal += finalFillingShares * shares[i].Price;
+            remainingShares = sharesRemainingInSplit + sharesAfterDate;
+            remainingSharesTotal = sharesRemainingInSplitTotal + shareAfterDateTotal;
 
-                        remainingShares = shares[i].Shares - finalFillingShares;
-                        remainingSharesTotal = remainingShares * shares[i].Price;
+            var remainingSharesPrice = remainingSharesTotal / remainingShares;
 
-                        splitPosition = i;
-                        break;
-                    }
-                }
-                else
-                {
-                    throw new InvalidOperationException("Not enough shares to sell by the date specified");
-                }
-            }
-
-            //Calculate remaining
-            for (int i = splitPosition + 1; i < shares.Count; i ++)
-            {
-                remainingShares += shares[i].Shares;
-                remainingSharesTotal += shares[i].Total;
-            }
-
-            result.CostPriceSoldShares = sellingSharesTotal / sellingShares;
-            result.GainLossOnSale = sellPricePerShare * sellingShares - sellingSharesTotal;
+            result.CostPriceSoldShares = sharesBeforeDateTotal / sharesBeforeDate;
+            result.GainLossOnSale = sellPricePerShare * sharesSold - result.CostPriceSoldShares * sharesSold;
             result.RemainingShares = remainingShares;
-            result.CostPriceRemaining = remainingSharesTotal / remainingShares;
+            result.CostPriceRemaining = remainingSharesPrice * (result.RemainingShares > 0 ? 1 : 0);
             return result;
         }
     }

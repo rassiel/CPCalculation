@@ -13,62 +13,68 @@ namespace CPCalculation
         {
             var result = new SellResults();
 
-            //var sharesBeforeDate = 0;
-            //var sharesBeforeDatePriceAvg = 0.0;
-            //var sharesBeforeDateTotal = 0.0;
+            var sharesBeforeDate = 0;
+            var sharesBeforeDateTotalPrices = 0.0;
+            var sharesBeforeDatePricesCount = 0;
 
-            //var sharesSelling = sharesSold;
-            //var sharesSellingTotal = 0.0;
+            var sharesSelling = sharesSold;
 
-            //var i = 0;
-            //while (shares[i].PurchaseDate <= sellDate && sharesSelling > shares[i].Shares && i < shares.Count)
-            //{
-            //    sharesBeforeDate += shares[i].Shares;
-            //    sharesBeforeDateTotal += shares[i].Total;
+            var sharesRemainingInSplit = 0;
+            var sharesRemainingInSplitPrice = 0.0;
 
-            //    sharesSelling -= shares[i].Shares;
-            //    i++;
-            //}
+            var i = 0;
+            var remainingPricesCount = 0;
+            while (i < shares.Count && shares[i].PurchaseDate <= sellDate && sharesSelling > shares[i].Shares)
+            {
+                sharesBeforeDate += shares[i].Shares;
+                sharesBeforeDateTotalPrices += shares[i].Price;
+                sharesBeforeDatePricesCount++;
 
-            //if (sharesSelling <= shares[i].Shares)
-            //{
-            //    sharesSelling = shares[i].Shares - sharesSelling;
-            //    sharesRemainingInSplitTotal = shares[i].Price;
-            //}
+                sharesSelling -= shares[i].Shares;
+                i++;
+            }
 
+            if (sharesSelling <= shares[i].Shares && shares[i].PurchaseDate <= sellDate)
+            {
+                sharesBeforeDate += sharesSelling;
+                sharesBeforeDateTotalPrices += shares[i].Price;
+                sharesBeforeDatePricesCount++;
 
-            //sharesBeforeDatePriceAvg = sharesBeforeDateTotal / sharesBeforeDate;
+                sharesRemainingInSplit = shares[i].Shares - sharesSelling;
+                sharesRemainingInSplitPrice = shares[i].Price;
+                remainingPricesCount++;
+                i++;
+            }
 
-            //if (sharesBeforeDate < sharesSold)
-            //{
-            //    throw new InvalidOperationException("Not enough shares to sell by the specified date");
-            //}
+            if (sharesBeforeDate < sharesSold)
+            {
+                throw new InvalidOperationException("Not enough shares to sell by the specified date");
+            }
 
-            //var sharesAfterDate = 0;
-            //var shareAfterDateTotal = 0.0;
+            var sharesAfterDate = 0;
+            var shareAfterDateTotalPrices = 0.0;
 
-            //while (i < shares.Count)
-            //{
-            //    sharesAfterDate += shares[i].Shares;
-            //    shareAfterDateTotal += shares[i].Total;
+            while (i < shares.Count)
+            {
+                sharesAfterDate += shares[i].Shares;
+                shareAfterDateTotalPrices += shares[i].Price;
 
-            //    i++;
-            //}
-            
-            //sharesBeforeDatePriceAvg = shareAfterDateTotal / sharesAfterDate;
+                remainingPricesCount++;
+                i++;
+            }
 
+            var remainingShares = 0;
+            var remainingSharesTotalPrices = 0.0;
 
-            //var remainingShares = 0;
-            //var remainingSharesTotal = 0.0;
-            //var remainingSharesAvg = 0.0;
+            remainingShares = sharesRemainingInSplit + sharesAfterDate;
+            remainingSharesTotalPrices = sharesRemainingInSplitPrice + shareAfterDateTotalPrices;
 
-            //remainingShares = sharesBeforeDate - sharesSold + sharesAfterDate;
-            //remainingSharesTotal = remainingShares * remainingSharesPrice;
+            var remainingSharesAvg = remainingSharesTotalPrices / remainingPricesCount;
 
-            //result.CostPriceSoldShares = sharesBeforeDatePriceMin;
-            //result.GainLossOnSale = sellPricePerShare * sharesSold - sellingSharesTotal;
-            //result.RemainingShares = remainingShares;
-            //result.CostPriceRemaining = remainingSharesPrice;
+            result.CostPriceSoldShares = sharesBeforeDateTotalPrices / sharesBeforeDatePricesCount;
+            result.GainLossOnSale = sellPricePerShare * sharesSold - result.CostPriceSoldShares * sharesSold;
+            result.RemainingShares = remainingShares;
+            result.CostPriceRemaining = remainingSharesAvg * (result.RemainingShares > 0 ? 1 : 0);
             return result;
         }
     }
